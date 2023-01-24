@@ -10,7 +10,28 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="/src/csv/launch.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="/src/csv/location.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/src/csv/mission.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="/src/csv/rocket.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
