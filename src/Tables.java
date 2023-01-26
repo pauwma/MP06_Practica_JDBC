@@ -31,6 +31,7 @@ public interface Tables {
     }
     public static void insertAllData(Connection conn) throws SQLException {
         insertLocations(conn);
+        insertAgencys(conn);
     }
     public static void insertLocations(Connection conn) throws SQLException {
         String csvFile = "src/csv/location.csv";
@@ -51,19 +52,26 @@ public interface Tables {
             System.out.println("ERROR - Insertando datos en location");
         }
     }
-    public static void insert(Connection conn) throws SQLException {
-        String csvFile = "src/csv/location.csv";
+    public static void insertAgencys(Connection conn) throws SQLException {
+        String csvFile = "src/csv/agency.csv";
         String line = "";
         String csvSplitBy = ",";
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
-            String sql = "INSERT INTO location (location_name, launch_location, rockets_launched) VALUES (?,?,?) ON CONFLICT DO NOTHING;";
+            String sql = "INSERT INTO agency (agency_name,agency_type,agency_abbreviation,agency_administration,agency_founded,agency_country,agency_spacecraft,agency_launchers,agency_description) VALUES (?,?,?,?,?,?,?,?,?) ON CONFLICT DO NOTHING;";
             PreparedStatement pst = conn.prepareStatement(sql);
+            br.readLine();  // Salta la primera línea
             while ((line = br.readLine()) != null) {
                 pst.clearParameters();
                 String[] data = line.split(csvSplitBy);
                 pst.setString(1,data[0].replace("\"",""));
                 pst.setString(2,data[1].replace("\"",""));
-                pst.setInt(3, Integer.parseInt(data[2]));
+                pst.setString(3,data[2].replace("\"",""));
+                pst.setString(4,data[3].replace("\"",""));
+                pst.setString(5,data[4].replace("\"",""));
+                pst.setString(6,data[5].replace("\"",""));
+                pst.setString(7,data[6].replace("\"",""));
+                pst.setString(8,data[7].replace("\"",""));
+                pst.setString(9,data[8].replace("\"",""));
                 pst.executeUpdate();
             }
         } catch (IOException e) {
