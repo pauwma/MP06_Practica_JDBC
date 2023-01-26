@@ -7,9 +7,9 @@ CREATE TABLE location (
 
 CREATE TABLE mission (
     mission_name TEXT NOT NULL,
-    mission_description TEXT NOT NULL,
     mission_launch_cost TEXT NOT NULL,
     mission_type TEXT NOT NULL,
+    mission_description TEXT NOT NULL,
     PRIMARY KEY (mission_name)
 );
 

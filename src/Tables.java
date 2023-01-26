@@ -33,17 +33,17 @@ public interface Tables {
         insertLocations(conn);
         insertAgencys(conn);
         insertRockets(conn);
+        insertMissions(conn);
     }
     public static void insertLocations(Connection conn) throws SQLException {
         String csvFile = "src/csv/location.csv";
         String line = "";
-        String csvSplitBy = ",";
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             String sql = "INSERT INTO location (location_name, launch_location, rockets_launched) VALUES (?,?,?) ON CONFLICT DO NOTHING;";
             PreparedStatement pst = conn.prepareStatement(sql);
             while ((line = br.readLine()) != null) {
                 pst.clearParameters();
-                String[] data = line.split(csvSplitBy);
+                String[] data = line.split(",");
                 pst.setString(1,data[0].replace("\"",""));
                 pst.setString(2,data[1].replace("\"",""));
                 pst.setInt(3, Integer.parseInt(data[2]));
@@ -56,14 +56,13 @@ public interface Tables {
     public static void insertAgencys(Connection conn) throws SQLException {
         String csvFile = "src/csv/agency.csv";
         String line = "";
-        String csvSplitBy = ",";
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             String sql = "INSERT INTO agency (agency_name,agency_type,agency_abbreviation,agency_administration,agency_founded,agency_country,agency_spacecraft,agency_launchers,agency_description) VALUES (?,?,?,?,?,?,?,?,?) ON CONFLICT DO NOTHING;";
             PreparedStatement pst = conn.prepareStatement(sql);
             br.readLine();  // Salta la primera línea
             while ((line = br.readLine()) != null) {
                 pst.clearParameters();
-                String[] data = line.split(csvSplitBy);
+                String[] data = line.split("\",\"");
                 pst.setString(1,data[0].replace("\"",""));
                 pst.setString(2,data[1].replace("\"",""));
                 pst.setString(3,data[2].replace("\"",""));
@@ -82,14 +81,13 @@ public interface Tables {
     public static void insertRockets(Connection conn) throws SQLException {
         String csvFile = "src/csv/rocket.csv";
         String line = "";
-        String csvSplitBy = ",";
         try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
             String sql = "INSERT INTO rocket (agency_name,rocket_name,rocket_family,rocket_length,rocket_diameter,rocket_launch_mass,rocket_low_earth_orbit_capacity,rocket_description) VALUES (?,?,?,?,?,?,?,?) ON CONFLICT DO NOTHING;";
             PreparedStatement pst = conn.prepareStatement(sql);
             br.readLine();  // Salta la primera línea
             while ((line = br.readLine()) != null) {
                 pst.clearParameters();
-                String[] data = line.split(csvSplitBy);
+                String[] data = line.split(",");
                 pst.setString(1,data[0].replace("\"",""));
                 pst.setString(2,data[1].replace("\"",""));
                 pst.setString(3,data[2].replace("\"",""));
@@ -102,6 +100,27 @@ public interface Tables {
             }
         } catch (IOException e) {
             System.out.println("ERROR - Insertando datos en rocket");
+        }
+    }
+    public static void insertMissions(Connection conn) throws SQLException {
+        String csvFile = "src/csv/mission.csv";
+        String line = "";
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            String sql = "INSERT INTO mission (rocket_name,mission_name,mission_type,mission_launch_cost,mission_description) VALUES (?,?,?,?,?) ON CONFLICT DO NOTHING;";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            br.readLine();  // Salta la primera línea
+            while ((line = br.readLine()) != null) {
+                pst.clearParameters();
+                String[] data = line.split("\",\"");
+                pst.setString(1,data[0].replace("\"",""));
+                pst.setString(2,data[1].replace("\"",""));
+                pst.setString(3,data[2].replace("\"",""));
+                pst.setString(4,data[3].replace("\"",""));
+                pst.setString(5,data[4].replace("\"",""));
+                pst.executeUpdate();
+            }
+        } catch (IOException e) {
+            System.out.println("ERROR - Insertando datos en mission");
         }
     }
 
