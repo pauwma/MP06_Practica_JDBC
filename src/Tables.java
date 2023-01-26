@@ -32,6 +32,7 @@ public interface Tables {
     public static void insertAllData(Connection conn) throws SQLException {
         insertLocations(conn);
         insertAgencys(conn);
+        insertRockets(conn);
     }
     public static void insertLocations(Connection conn) throws SQLException {
         String csvFile = "src/csv/location.csv";
@@ -75,7 +76,32 @@ public interface Tables {
                 pst.executeUpdate();
             }
         } catch (IOException e) {
-            System.out.println("ERROR - Insertando datos en location");
+            System.out.println("ERROR - Insertando datos en agency");
+        }
+    }
+    public static void insertRockets(Connection conn) throws SQLException {
+        String csvFile = "src/csv/rocket.csv";
+        String line = "";
+        String csvSplitBy = ",";
+        try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
+            String sql = "INSERT INTO rocket (agency_name,rocket_name,rocket_family,rocket_length,rocket_diameter,rocket_launch_mass,rocket_low_earth_orbit_capacity,rocket_description) VALUES (?,?,?,?,?,?,?,?) ON CONFLICT DO NOTHING;";
+            PreparedStatement pst = conn.prepareStatement(sql);
+            br.readLine();  // Salta la primera línea
+            while ((line = br.readLine()) != null) {
+                pst.clearParameters();
+                String[] data = line.split(csvSplitBy);
+                pst.setString(1,data[0].replace("\"",""));
+                pst.setString(2,data[1].replace("\"",""));
+                pst.setString(3,data[2].replace("\"",""));
+                pst.setString(4,data[3].replace("\"",""));
+                pst.setString(5,data[4].replace("\"",""));
+                pst.setString(6,data[5].replace("\"",""));
+                pst.setString(7,data[6].replace("\"",""));
+                pst.setString(8,data[7].replace("\"",""));
+                pst.executeUpdate();
+            }
+        } catch (IOException e) {
+            System.out.println("ERROR - Insertando datos en rocket");
         }
     }
 
