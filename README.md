@@ -2,9 +2,9 @@
 
 
 Manejo de la conexión mediante un menú de terminal que debe tener:
-- [x] Una opción que permita borrar las tablas de la base de datos y su información.
-- [x] Una opción que permita crear las tablas de la base de datos.
-- [x] Una opción que permita poblar masivamente las tablas de la base de datos leyendo los ficheros generados en la primera práctica.
+- &check; Una opción que permita borrar las tablas de la base de datos y su información.
+- &check; Una opción que permita crear las tablas de la base de datos.
+- &check; Una opción que permita poblar masivamente las tablas de la base de datos leyendo los ficheros generados en la primera práctica.
 
 Diferentes opciones de consulta sobre la información. Ejemplos:
 - [ ] Seleccionar todos los elementos que contengan un texto concreto.
