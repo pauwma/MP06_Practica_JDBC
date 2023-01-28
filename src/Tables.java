@@ -1,14 +1,13 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
+import java.util.Scanner;
 import java.util.stream.Collectors;
 
 public interface Tables {
 
+    //? Elimina todas las tablas.
     public static void deleteAllTables(Statement st){
         try {
             st.execute("DROP TABLE location CASCADE;" +
@@ -21,6 +20,8 @@ public interface Tables {
             System.out.println("INFO - Las tablas ya estaban eliminadas.");
         }
     }
+
+    //? Crea todas las tablas.
     public static void createAllTables(Statement st) throws IOException, SQLException {
         try(BufferedReader br = new BufferedReader(new FileReader("src/schema.sql"))) {
             st.execute(br.lines().collect(Collectors.joining(" \n")));
@@ -29,6 +30,8 @@ public interface Tables {
             System.out.println("INFO - Las tablas ya estaban creadas.");
         }
     }
+
+    //? Inserta información de CSV a las tablas.
     public static void insertAllData(Connection conn) throws SQLException {
         insertLocations(conn);
         insertAgencys(conn);
@@ -146,6 +149,91 @@ public interface Tables {
             }
         } catch (IOException e) {
             System.out.println("ERROR - Insertando datos en launch");
+        }
+    }
+
+    public static void searchIn(Connection conn) throws SQLException{
+        Scanner scanner = new Scanner(System.in);
+        String searchText = "";
+        while (searchText.replace(" ", "").isEmpty()) {
+            System.out.print("Ingrese el texto de búsqueda: ");
+            searchText = scanner.nextLine();
+            searchText = searchText.toLowerCase();
+            if (searchText.replace(" ", "").isEmpty()) {
+                System.out.println("Por favor ingrese un texto válido.");
+            }
+        }
+
+        System.out.print("Ingrese en que tabla quiere buscar (1: launch, 2: rocket, 3: agency, 4: location, 5: mission): ");
+        int tableChoice = scanner.nextInt();
+        String query = "";
+        switch(tableChoice){
+            case 1:
+                query = "SELECT * FROM launch WHERE launch_title ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM launch WHERE launch_status ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM launch WHERE launch_date ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM launch WHERE rocket_name ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM launch WHERE agency_name ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM launch WHERE location_name ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM launch WHERE mission_name ILIKE '%" + searchText + "%'";
+                break;
+            case 2:
+                query = "SELECT * FROM rocket WHERE rocket_name ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM rocket WHERE rocket_family ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM rocket WHERE rocket_length ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM rocket WHERE rocket_diameter ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM rocket WHERE rocket_low_earth_orbit_capacity ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM rocket WHERE rocket_launch_mass ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM rocket WHERE rocket_description ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM rocket WHERE agency_name ILIKE '%" + searchText + "%' ";
+                break;
+            case 3:
+                query = "SELECT * FROM agency WHERE agency_name ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM agency WHERE agency_type ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM agency WHERE agency_abbreviation ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM agency WHERE agency_administration ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM agency WHERE agency_founded ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM agency WHERE agency_country ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM agency WHERE agency_spacecraft ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM agency WHERE agency_launchers ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM agency WHERE agency_description ILIKE '%" + searchText + "%'";
+                break;
+            case 4:
+                query = "SELECT * FROM location WHERE location_name ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM location WHERE launch_location ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM location WHERE rockets_launched ILIKE '%" + searchText + "%'";
+
+                break;
+            case 5:
+                query = "SELECT * FROM mission WHERE mission_name ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM mission WHERE mission_launch_cost ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM mission WHERE mission_type ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM mission WHERE mission_description ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM mission WHERE rocket_name ILIKE '%" + searchText + "%'";
+                break;
+            default:
+                System.out.println("Opción inválida, por favor ingrese un número entre 1 y 5.");
+                return;
+        }
+
+        PreparedStatement statement = conn.prepareStatement(query);
+        ResultSet result = statement.executeQuery();
+        if (!result.next()) {
+            System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nNo se ha encontrado \"" + searchText+"\"\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        } else {
+            System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            do {
+                ResultSetMetaData rsmd = result.getMetaData();
+                int columnCount = rsmd.getColumnCount();
+                for (int i = 1; i <= columnCount; i++) {
+                    String columnName = rsmd.getColumnName(i);
+                    String columnValue = result.getString(i);
+                    if (columnValue.toLowerCase().contains(searchText.toLowerCase())) {
+                        System.out.println(columnName + ": " + columnValue);
+                    }
+                }
+            } while (result.next());
+            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
         }
     }
 
