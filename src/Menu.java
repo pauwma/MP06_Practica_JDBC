@@ -12,7 +12,7 @@ public class Menu {
 
 	public int mainMenu() {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-
+		boolean validOption = false;
 		do {
 
 			System.out.println("\n┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
@@ -30,13 +30,16 @@ public class Menu {
 			System.out.print("Elige una opción: ");
 			try {
 				option = Integer.parseInt(br.readLine());
+				if(option >= 0 && option <= 6) {
+					validOption = true;
+				} else {
+					System.out.println("ERROR - Opción no válida, por favor selecciona una opción entre 0 y 6");
+				}
 			} catch (Exception e) {
-				System.out.println("ERROR - Opción no válida");
-				e.printStackTrace();
+				System.out.println("ERROR - Opción no válida, por favor introduce un número entero");
 			}
 
-		} while (close);
-
+		} while (!validOption);
 		return option;
 	}
 

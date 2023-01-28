@@ -152,6 +152,7 @@ public interface Tables {
         }
     }
 
+    //? Busca el texto introducido por el usuario en una tabla también selecionada.
     public static void searchIn(Connection conn) throws SQLException{
         Scanner scanner = new Scanner(System.in);
         String searchText = "";

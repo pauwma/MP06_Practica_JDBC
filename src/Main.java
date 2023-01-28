@@ -13,7 +13,6 @@ public class Main {
 		ConnectionFactory connectionFactory = ConnectionFactory.getInstance();
 		Connection c = connectionFactory.connect();
 
-
 		Class.forName( "org.postgresql.Driver" );
 
 		//Obrim la connexió amb la base de dades anomenada dbMail
