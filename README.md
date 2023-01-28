@@ -7,7 +7,7 @@ Manejo de la conexión mediante un menú de terminal que debe tener:
 - &check;  Una opción que permita poblar masivamente las tablas de la base de datos leyendo los ficheros generados en la primera práctica.
 
 Diferentes opciones de consulta sobre la información. Ejemplos:
-- &cross;  Seleccionar todos los elementos que contengan un texto concreto.
+- &check;  Seleccionar todos los elementos que contengan un texto concreto.
 - &cross;  Seleccionar todos los elementos que cumplan una condición.
 - &cross;  Seleccionar elementos concretos.
 
