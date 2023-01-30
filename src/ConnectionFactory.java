@@ -8,9 +8,6 @@ import java.util.Properties;
 public class ConnectionFactory {
 	// init database constants
 	private static final String DATABASE_DRIVER = "org.postgresql.Driver";
-	//private static final String DATABASE_URL = "jdbc:postgresql://10.99.108.60:5432/acb";
-	//private static final String USERNAME = "usuario";
-	//private static final String PASSWORD = "password";
 	private static final String MAX_POOL = "250";
 	private static ConnectionFactory instance;
 
@@ -117,22 +114,4 @@ public class ConnectionFactory {
 			}
 		}
 	}
-	
-//	public void init() {
-//		Properties prop = new Properties();
-//		InputStream propStream = this.getClass().getClassLoader().getResourceAsStream("db.properties");
-//
-//		try {
-//			prop.load(propStream);
-//			this.host = prop.getProperty("host");
-//			this.port = prop.getProperty("port");
-//			this.dbname = prop.getProperty("dbname");
-//			this.schema = prop.getProperty("schema");
-//		} catch (IOException e) {
-//			String message = "ERROR: db.properties file could not be found";
-//			System.err.println(message);
-//			throw new RuntimeException(message, e);
-//		}
-//	}
-	
 }

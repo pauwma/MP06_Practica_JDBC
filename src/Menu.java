@@ -13,6 +13,12 @@ public class Menu {
 		super();
 	}
 
+
+	/**
+	 * Muestra el menú principal y permite elegir una opción.
+	 *
+	 * @return La opción elegida por el usuario. Valor entero entre 0 y 3.
+	 */
 	public int mainMenu() {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		boolean validOption = false;
@@ -42,6 +48,11 @@ public class Menu {
 		return option;
 	}
 
+	/**
+	 * Muestra el menú del control de la base de datos y permite elegir una opción.
+	 *
+	 * @return La opción elegida por el usuario.
+	 */
 	public int menuDatabase(Connection conn, Statement st) throws SQLException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int option = 0;
@@ -52,7 +63,7 @@ public class Menu {
 			System.out.println("├────────────────────────────┤");
 			System.out.println("│  1. Crear                  │");
 			System.out.println("│  2. Borrar                 │");
-			System.out.println("│  2. Rellenar               │");
+			System.out.println("│  3. Rellenar               │");
 			System.out.println("│  0. Cerrar                 │");
 			System.out.println("└────────────────────────────┘");
 			System.out.print("Ingrese opción: ");
@@ -84,6 +95,12 @@ public class Menu {
 		}
 		return option;
 	}
+
+	/**
+	 * Muestra el menú del control de las fuinciones de selects y permite elegir una opción.
+	 *
+	 * @return La opción elegida por el usuario.
+	 */
 	public int menuSelects(Connection conn) throws SQLException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int option = 0;
@@ -122,6 +139,12 @@ public class Menu {
 		}
 		return option;
 	}
+
+	/**
+	 * Muestra el menú del control de las fuinciones de updates y permite elegir una opción.
+	 *
+	 * @return La opción elegida por el usuario.
+	 */
 	public int menuUpdates(Connection conn) throws SQLException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int option = 0;
@@ -162,6 +185,9 @@ public class Menu {
 		return option;
 	}
 
+	/**
+	 * Función para cerrar el menú principal
+	 */
 	public void close(){
 		close = true;
 	}

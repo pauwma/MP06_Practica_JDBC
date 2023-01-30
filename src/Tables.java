@@ -7,7 +7,11 @@ import java.util.stream.Collectors;
 
 public interface Tables {
 
-    //? Elimina todas las tablas.
+    /**
+     * Elimina todas las tablas en una base de datos relacional.
+     *
+     * @param st Un objeto de la clase {@code java.sql.Statement} que se utiliza para ejecutar una instrucción SQL.
+     */
     public static void deleteAllTables(Statement st){
         try {
             st.execute("DROP TABLE location CASCADE;" +
@@ -21,7 +25,13 @@ public interface Tables {
         }
     }
 
-    //? Crea todas las tablas.
+    /**
+     * Crea todas las tablas en la base de datos.
+     *
+     * @param st una instancia de {@code Statement} para ejecutar sentencias SQL en la base de datos.
+     * @throws IOException si hay un error al leer el archivo "src/schema.sql".
+     * @throws SQLException si hay un error al ejecutar la sentencia SQL en la base de datos.
+     */
     public static void createAllTables(Statement st) throws IOException, SQLException {
         try(BufferedReader br = new BufferedReader(new FileReader("src/schema.sql"))) {
             st.execute(br.lines().collect(Collectors.joining(" \n")));
@@ -31,7 +41,12 @@ public interface Tables {
         }
     }
 
-    //? Inserta información de CSV a las tablas.
+    /**
+     * Inserta todos los registros de los csv en sus respectivas tablas de la base de datos.
+     *
+     * @param conn Conexión a la base de datos.
+     * @throws SQLException Si ocurre algún error en la ejecución de la consulta SQL.
+     */
     public static void insertAllData(Connection conn) throws SQLException {
         insertLocations(conn);
         insertAgencys(conn);
@@ -39,6 +54,13 @@ public interface Tables {
         insertMissions(conn);
         insertLaunches(conn);
     }
+
+    /**
+     * Inserta los registros de localizaciones en la tabla "location" de la base de datos.
+     *
+     * @param conn Conexión a la base de datos.
+     * @throws SQLException Si ocurre algún error en la ejecución de la consulta SQL.
+     */
     public static void insertLocations(Connection conn) throws SQLException {
         String csvFile = "src/csv/location.csv";
         String line = "";
@@ -58,6 +80,13 @@ public interface Tables {
             System.out.println("ERROR - Insertando datos en location");
         }
     }
+
+    /**
+     * Inserta los registros de agencias en la tabla "agency" de la base de datos.
+     *
+     * @param conn Conexión a la base de datos.
+     * @throws SQLException Si ocurre algún error en la ejecución de la consulta SQL.
+     */
     public static void insertAgencys(Connection conn) throws SQLException {
         String csvFile = "src/csv/agency.csv";
         String line = "";
@@ -83,6 +112,13 @@ public interface Tables {
             System.out.println("ERROR - Insertando datos en agency");
         }
     }
+
+    /**
+     * Inserta los registros de cohetes en la tabla "rocket" de la base de datos.
+     *
+     * @param conn Conexión a la base de datos.
+     * @throws SQLException Si ocurre algún error en la ejecución de la consulta SQL.
+     */
     public static void insertRockets(Connection conn) throws SQLException {
         String csvFile = "src/csv/rocket.csv";
         String line = "";
@@ -107,6 +143,13 @@ public interface Tables {
             System.out.println("ERROR - Insertando datos en rocket");
         }
     }
+
+    /**
+     * Inserta los registros de misiones en la tabla "mission" de la base de datos.
+     *
+     * @param conn Conexión a la base de datos.
+     * @throws SQLException Si ocurre algún error en la ejecución de la consulta SQL.
+     */
     public static void insertMissions(Connection conn) throws SQLException {
         String csvFile = "src/csv/mission.csv";
         String line = "";
@@ -159,7 +202,12 @@ public interface Tables {
         }
     }
 
-    //? Busca el texto introducido por el usuario en una tabla también selecionada.
+    /**
+     * Busca el texto introducido por el usuario en una tabla también selecionada.
+     *
+     * @param conn La conexión a la base de datos.
+     * @throws SQLException Si hay algún problema con la conexión a la base de datos.
+     */
     public static void searchByText(Connection conn) throws SQLException{
         Scanner scanner = new Scanner(System.in);
         String searchText = "";
@@ -245,6 +293,12 @@ public interface Tables {
         }
     }
 
+    /**
+     * Método para seleccionar datos de una tabla en una base de datos.
+     *
+     * @param conn La conexión con la base de datos.
+     * @throws SQLException Si hay un error en la consulta a la base de datos.
+     */
     public static void selectInTable(Connection conn) throws SQLException {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Ingrese en que tabla quiere buscar (1: launch, 2: rocket, 3: agency, 4: location, 5: mission): ");
