@@ -16,3 +16,8 @@ Posibilidad de modificar un registro concreto de información. Ejemplo:
 - &cross;  Posibilidad de modificar diferentes registros de información. ()
 - &cross;  Posibilidad de eliminar un registro concreto de información. (Mostrar y eliminar)
 - &cross;  Posibilidad de eliminar un conjunto de registros de información que cumplan un condición.
+
+Extras:
+- &cross;  JavaDoc.
+- &cross;  ReadMe.
+- &cross;  Documentación en web de github.
