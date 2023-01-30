@@ -28,23 +28,13 @@ public class Main {
 		while (option > 0 && option < 12) {
 			switch (option) {
 			case 1:
-				Tables.deleteAllTables(st);
+				menu.menuDatabase(conn, st);
 				break;
 			case 2:
-				Tables.createAllTables(st);
-				break;
-			case 3:
-				Tables.insertAllData(conn);
-				break;
-			case 4:
-				break;
-			case 5:
-				Tables.selectInTable(conn);
-				break;
-			case 6:
 				menu.menuSelects(conn);
 				break;
-			case 7:
+			case 3:
+				menu.menuUpdates(conn);
 				break;
 			case 0:
 				menu.close();
