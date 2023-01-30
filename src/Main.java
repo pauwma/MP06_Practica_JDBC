@@ -37,13 +37,12 @@ public class Main {
 				Tables.insertAllData(conn);
 				break;
 			case 4:
-				Tables.searchIn(conn);
 				break;
 			case 5:
 				Tables.selectInTable(conn);
 				break;
 			case 6:
-				menu.menuSelects();
+				menu.menuSelects(conn);
 				break;
 			case 7:
 				break;

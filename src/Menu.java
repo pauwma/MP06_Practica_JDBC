@@ -1,6 +1,8 @@
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class Menu {
 	private int option;
@@ -43,22 +45,33 @@ public class Menu {
 		return option;
 	}
 
-	public int menuSelects() {
+	public int menuSelects(Connection conn) throws SQLException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int option = 0;
-		while (option != 5) {
+		boolean cerrarSubmenu = false;
+		while (!cerrarSubmenu) {
 			System.out.println("\n┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
-			System.out.println("┃ 1. Agregar nueva misión      ┃");
-			System.out.println("┃ 2. Modificar misión existente ┃");
-			System.out.println("┃ 3. Eliminar misión           ┃");
-			System.out.println("┃ 4. Ver todas las misiones    ┃");
-			System.out.println("┃ 5. Salir                     ┃");
+			System.out.println("┃        MENU SELECTS        ┃");
+			System.out.println("┣━━━━━━━━━━━━━━━━━━━━━━━━━━━━┫");
+			System.out.println("┃  1. Por tablas             ┃");
+			System.out.println("┃  2. Por contenido          ┃");
+			System.out.println("┃  0. Salir                  ┃");
 			System.out.println("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛");
 			System.out.print("Ingrese opción: ");
 			try {
 				option = Integer.parseInt(br.readLine());
 				if (option >= 1 && option <= 5) {
-					return option;
+					switch (option){
+						case 1:
+							Tables.selectInTable(conn);
+							break;
+						case 2:
+							Tables.searchByText(conn);
+							break;
+						case 0:
+							cerrarSubmenu = true;
+							break;
+					}
 				} else {
 					System.out.println("Opción inválida, por favor ingrese una opción válida.");
 				}
