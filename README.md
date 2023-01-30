@@ -12,7 +12,7 @@ Diferentes opciones de consulta sobre la información. Ejemplos:
 - &cross;  Seleccionar elementos concretos. (Select de launches, select de rockets, etc)
 
 Posibilidad de modificar un registro concreto de información. Ejemplo:
-- &cross;  Seleccionar un elemento concreto y permitir su modificación.
-- &cross;  Posibilidad de modificar diferentes registros de información.
-- &cross;  Posibilidad de eliminar un registro concreto de información.
+- &cross;  Seleccionar un elemento concreto y permitir su modificación. (Mostrar tablas númeradas y edición de ese)
+- &cross;  Posibilidad de modificar diferentes registros de información. ()
+- &cross;  Posibilidad de eliminar un registro concreto de información. (Mostrar y eliminar)
 - &cross;  Posibilidad de eliminar un conjunto de registros de información que cumplan un condición.
