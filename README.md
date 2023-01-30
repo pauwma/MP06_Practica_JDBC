@@ -8,11 +8,16 @@ Manejo de la conexión mediante un menú de terminal que debe tener:
 
 Diferentes opciones de consulta sobre la información. Ejemplos:
 - &check;  Seleccionar todos los elementos que contengan un texto concreto.
-- &cross;  Seleccionar todos los elementos que cumplan una condición.
-- &cross;  Seleccionar elementos concretos.
+- &cross;  Seleccionar todos los elementos que cumplan una condición. (PEJ: Launches listos, launches después de, etc)
+- &cross;  Seleccionar elementos concretos. (Select de launches, select de rockets, etc)
 
 Posibilidad de modificar un registro concreto de información. Ejemplo:
-- &cross;  Seleccionar un elemento concreto y permitir su modificación.
-- &cross;  Posibilidad de modificar diferentes registros de información.
-- &cross;  Posibilidad de eliminar un registro concreto de información.
+- &cross;  Seleccionar un elemento concreto y permitir su modificación. (Mostrar tablas númeradas y edición de ese)
+- &cross;  Posibilidad de modificar diferentes registros de información. ()
+- &cross;  Posibilidad de eliminar un registro concreto de información. (Mostrar y eliminar)
 - &cross;  Posibilidad de eliminar un conjunto de registros de información que cumplan un condición.
+
+Extras:
+- &cross;  JavaDoc.
+- &cross;  ReadMe.
+- &cross;  Documentación en web de github.
