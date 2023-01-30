@@ -9,7 +9,7 @@ Manejo de la conexión mediante un menú de terminal que debe tener:
 Diferentes opciones de consulta sobre la información. Ejemplos:
 - &check;  Seleccionar todos los elementos que contengan un texto concreto.
 - &cross;  Seleccionar todos los elementos que cumplan una condición.
-- &cross;  Seleccionar elementos concretos.
+- &cross;  Seleccionar elementos concretos. (Select de launches, select de rockets, etc)
 
 Posibilidad de modificar un registro concreto de información. Ejemplo:
 - &cross;  Seleccionar un elemento concreto y permitir su modificación.
