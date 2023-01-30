@@ -128,6 +128,13 @@ public interface Tables {
             System.out.println("ERROR - Insertando datos en mission");
         }
     }
+
+    /**
+     * Inserta los registros de lanzamientos en la tabla "launch" de la base de datos.
+     *
+     * @param conn Conexión a la base de datos.
+     * @throws SQLException Si ocurre algún error en la ejecución de la consulta SQL.
+     */
     public static void insertLaunches(Connection conn) throws SQLException {
         String csvFile = "src/csv/launch.csv";
         String line = "";
@@ -235,6 +242,59 @@ public interface Tables {
                 }
             } while (result.next());
             System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        }
+    }
+
+    public static void selectInTable(Connection conn) throws SQLException {
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Ingrese en que tabla quiere buscar (1: launch, 2: rocket, 3: agency, 4: location, 5: mission): ");
+        int tableChoice = scanner.nextInt();
+        String sql = "SELECT * FROM ";
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try {
+            // Establecer conexión con la base de datos
+            switch (tableChoice){
+                case 1:
+                    sql += "launch";
+                    break;
+                case 2:
+                    sql += "rocket";
+                    break;
+                case 3:
+                    sql += "agency";
+                    break;
+                case 4:
+                    sql += "location";
+                    break;
+                case 5:
+                    sql += "mission";
+                    break;
+                default:
+                    System.out.println("Opción no válida");
+                    return;
+            }
+
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+
+            int i = 1;
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnsNumber = rsmd.getColumnCount();
+            while (rs.next()) {
+                ResultSetMetaData metaData = rs.getMetaData();
+                int columnCount = metaData.getColumnCount();
+                System.out.print(i + " | ");
+                for (int j = 1; j <= columnCount; j++) {
+                    System.out.print(rs.getString(j) + " | ");
+                }
+                System.out.println();
+                i++;
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 

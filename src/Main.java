@@ -40,8 +40,10 @@ public class Main {
 				Tables.searchIn(conn);
 				break;
 			case 5:
+				Tables.selectInTable(conn);
 				break;
 			case 6:
+				menu.menuSelects();
 				break;
 			case 7:
 				break;

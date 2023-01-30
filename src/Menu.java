@@ -43,6 +43,34 @@ public class Menu {
 		return option;
 	}
 
+	public int menuSelects() {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		int option = 0;
+		while (option != 5) {
+			System.out.println("\n┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓");
+			System.out.println("┃ 1. Agregar nueva misión      ┃");
+			System.out.println("┃ 2. Modificar misión existente ┃");
+			System.out.println("┃ 3. Eliminar misión           ┃");
+			System.out.println("┃ 4. Ver todas las misiones    ┃");
+			System.out.println("┃ 5. Salir                     ┃");
+			System.out.println("┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛");
+			System.out.print("Ingrese opción: ");
+			try {
+				option = Integer.parseInt(br.readLine());
+				if (option >= 1 && option <= 5) {
+					return option;
+				} else {
+					System.out.println("Opción inválida, por favor ingrese una opción válida.");
+				}
+			} catch (NumberFormatException e) {
+				System.out.println("Error en el formato, por favor ingrese una opción válida.");
+			} catch (IOException e) {
+				System.out.println("Error de entrada/salida.");
+			}
+		}
+		return option;
+	}
+
 	public void close(){
 		close = true;
 	}
