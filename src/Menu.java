@@ -75,7 +75,7 @@ public class Menu {
 							Tables.createAllTables(st);
 							break;
 						case 2:
-							Tables.createAllTables(st);
+							Tables.deleteAllTables(st);
 							break;
 						case 3:
 							Tables.insertAllData(conn);
@@ -119,7 +119,7 @@ public class Menu {
 				if (option >= 0 && option <= 2) {
 					switch (option){
 						case 1:
-							Tables.selectInTable(conn);
+							Tables.selectInTable(conn,0);
 							break;
 						case 2:
 							Tables.searchByText(conn);
@@ -164,10 +164,9 @@ public class Menu {
 				if (option >= 0 && option <= 2) {
 					switch (option){
 						case 1:
-							Tables.selectInTable(conn);
+							Tables.updateInTable(conn);
 							break;
 						case 2:
-							Tables.searchByText(conn);
 							break;
 						case 0:
 							cerrarSubmenu = true;

@@ -25,7 +25,7 @@ public class Main {
 		//Tanquem la connexió. No és estríctament necessari, però és un bon hàbit!
 
 		int option = menu.mainMenu();
-		while (option > 0 && option < 12) {
+		while (option > 0 && option <= 3) {
 			switch (option) {
 			case 1:
 				menu.menuDatabase(conn, st);

@@ -297,18 +297,21 @@ public interface Tables {
      * Método para seleccionar datos de una tabla en una base de datos.
      *
      * @param conn La conexión con la base de datos.
+     * @param nTabla Número de la tabla que desea mostrar, 0 para preguntar.
      * @throws SQLException Si hay un error en la consulta a la base de datos.
      */
-    public static void selectInTable(Connection conn) throws SQLException {
-        Scanner scanner = new Scanner(System.in);
-        System.out.print("Ingrese en que tabla quiere buscar (1: launch, 2: rocket, 3: agency, 4: location, 5: mission): ");
-        int tableChoice = scanner.nextInt();
+    public static void selectInTable(Connection conn, int nTabla) throws SQLException {
+        int tableChoice = nTabla;
+        if (nTabla == 0){
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Ingrese en que tabla quiere buscar (1: launch, 2: rocket, 3: agency, 4: location, 5: mission): ");
+            tableChoice = scanner.nextInt();
+        }
         String sql = "SELECT * FROM ";
         PreparedStatement pstmt = null;
         ResultSet rs = null;
 
         try {
-            // Establecer conexión con la base de datos
             switch (tableChoice){
                 case 1:
                     sql += "launch";
@@ -352,4 +355,104 @@ public interface Tables {
         }
     }
 
+    public static void updateInTable(Connection conn) throws SQLException{
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Ingrese en que tabla quiere buscar (1: launch, 2: rocket, 3: agency, 4: location, 5: mission): ");
+        int tableChoice = scanner.nextInt();
+
+        String sql = "SELECT * FROM ";
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int nRows = 0;
+        try {
+            switch (tableChoice){
+                case 1:
+                    sql += "launch";
+                    break;
+                case 2:
+                    sql += "rocket";
+                    break;
+                case 3:
+                    sql += "agency";
+                    break;
+                case 4:
+                    sql += "location";
+                    break;
+                case 5:
+                    sql += "mission";
+                    break;
+                default:
+                    System.out.println("Opción no válida");
+                    return;
+            }
+
+            pstmt = conn.prepareStatement(sql);
+            rs = pstmt.executeQuery();
+
+            int i = 1;
+            ResultSetMetaData rsmd = rs.getMetaData();
+            int columnsNumber = rsmd.getColumnCount();
+            while (rs.next()) {
+                ResultSetMetaData metaData = rs.getMetaData();
+                int columnCount = metaData.getColumnCount();
+                System.out.print(i + " | ");
+                for (int j = 1; j <= columnCount; j++) {
+                    System.out.print(rs.getString(j) + " | ");
+                }
+                System.out.println();
+                i++;
+            }
+            nRows = i-1;
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        System.out.println("\nInserta el número de la fila que quieres editar: ( 1-" + nRows +" / 0-Salir)");
+        int rowChoice = scanner.nextInt();
+        if (rowChoice > 0 && rowChoice <= nRows ){
+            switch (tableChoice){
+                case 4:
+                    String newLocationName = scannerString("Introduce el nuevo nombre de la ubicación: ");
+                    String newLaunchLocation = scannerString("Introduce el nuevo lugar de lanzamiento: ");
+                    String newRocketsLaunched = scannerString("Introduce el nuevo número de cohetes lanzados: ");
+                    sql = "UPDATE location\n" +
+                            "SET location_name = '"+newLocationName+"', launch_location = '"+newLaunchLocation+"', rockets_launched = '"+newRocketsLaunched+"' WHERE location_name = (SELECT location_name FROM location LIMIT 1 OFFSET "+(rowChoice-1)+");";
+                    PreparedStatement preparedStatement = conn.prepareStatement(sql);
+                    preparedStatement.executeUpdate();
+                    break;
+            }
+
+        } else if (rowChoice == 0){
+            System.out.println("No se ha editado ninguna fila");
+        } else {
+            System.out.println("Opción no válida");
+        }
+
+    }
+
+
+
+    public static String scannerString(String pregunta) {
+        Scanner sc = new Scanner(System.in);
+        String userInput = "";
+        boolean isValid = false;
+        while (!isValid) {
+            try {
+                System.out.print(pregunta);
+                userInput = sc.nextLine();
+                if (userInput.trim().isEmpty()){
+                    System.out.println("No puedes introducir una cadena vacía.");
+                    isValid = false;
+                } else {
+                    isValid = true;
+                }
+            } catch (Exception e) {
+                System.out.println("Ocurrió un error al leer la entrada. Por favor, inténtalo de nuevo.");
+                sc.next();
+            }
+        }
+
+        return userInput;
+    }
 }
