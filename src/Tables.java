@@ -424,15 +424,15 @@ public interface Tables {
                     System.out.println("Lista de agencias:");
                     String sql2 = "SELECT agency_name FROM agency;";
                     conn.prepareStatement(sql2);
-                    ResultSet rs2 = pstmt.executeQuery();
+                    ResultSet rsRcoket = pstmt.executeQuery();
                     List<String> agencyNames = new ArrayList<>();
-                    int i = 0;
-                    while (rs2.next()) {
-                        i++;
-                        System.out.println(i + " | " + rs2.getString("agency_name"));
-                        agencyNames.add(rs2.getString("agency_name"));
+                    int nRocket = 0;
+                    while (rsRcoket.next()) {
+                        nRocket++;
+                        System.out.println(nRocket + " | " + rsRcoket.getString("agency_name"));
+                        agencyNames.add(rsRcoket.getString("agency_name"));
                     }
-                    String newAgencyNameRocket = agencyNames.get(scannerInt("Introduce el número correspondiente a la agencia del cohete: ",1,i)-1);
+                    String newAgencyNameRocket = agencyNames.get(scannerInt("Introduce el número correspondiente a la agencia del cohete: ",1,nRocket)-1);
 
                     sql = "UPDATE rocket\n" +
                             "SET rocket_name = '"+newRocketName+"', rocket_family = '"+newRocketFamily+"', rocket_length = '"+newRocketLength+"',\n" +
@@ -464,6 +464,31 @@ public interface Tables {
                     sql = "UPDATE location\n" +
                             "SET location_name = '"+newLocationName+"', launch_location = '"+newLaunchLocation+"', rockets_launched = '"+newRocketsLaunched+"' " +
                             "WHERE location_name = (SELECT location_name FROM location LIMIT 1 OFFSET "+(rowChoice-1)+");";
+                    break;
+                case 5:
+
+                    String newMissionName = scannerString("Introduce el nombre de la misión (" + rs.getString(1) +"): ");
+                    String newMissionLaunchCost = scannerString("Introduce el coste de la misión (" + rs.getString(2) +"): ");
+                    String newMissionType = scannerString("Introduce el tipo de la misión (" + rs.getString(3) +"): ");
+                    String newMissionDescription = scannerString("Introduce la descripción de la misión (" + rs.getString(4) +") \n:");
+
+                    System.out.println("Lista de cohetes:");
+                    String sqlMissionRocket = "SELECT rocket_name FROM rocket;";
+                    conn.prepareStatement(sqlMissionRocket);
+                    ResultSet rsMission = pstmt.executeQuery();
+                    List<String> rocketNames = new ArrayList<>();
+                    int nMissionRocket = 0;
+                    while (rsMission.next()) {
+                        nMissionRocket++;
+                        System.out.println(nMissionRocket + " | " + rsMission.getString("rocket_name"));
+                        rocketNames.add(rsMission.getString("rocket_name"));
+                    }
+                    String newMissionRocket = rocketNames.get(scannerInt("Introduce el número correspondiente al cohete de la misión: ",1,nMissionRocket)-1);
+
+                    sql = "UPDATE mission\n" +
+                            "SET mission_name = '"+newMissionName+"', mission_launch_cost = '"+newMissionLaunchCost+"', mission_type = '"+newMissionType+"',\n" +
+                            "mission_description = '"+newMissionDescription+"', rocket_name = '"+newMissionRocket+"'\n" +
+                            "WHERE mission_name = (SELECT mission_name FROM mission LIMIT 1 OFFSET "+(rowChoice-1)+");";
                     break;
             }
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
