@@ -359,7 +359,6 @@ public interface Tables {
         Scanner scanner = new Scanner(System.in);
         System.out.print("Ingrese en que tabla quiere buscar (1: launch, 2: rocket, 3: agency, 4: location, 5: mission): ");
         int tableChoice = scanner.nextInt();
-
         String sql = "SELECT * FROM ";
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -386,12 +385,11 @@ public interface Tables {
                     return;
             }
 
-            pstmt = conn.prepareStatement(sql);
+            pstmt = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
             rs = pstmt.executeQuery();
 
             int i = 1;
             ResultSetMetaData rsmd = rs.getMetaData();
-            int columnsNumber = rsmd.getColumnCount();
             while (rs.next()) {
                 ResultSetMetaData metaData = rs.getMetaData();
                 int columnCount = metaData.getColumnCount();
@@ -410,18 +408,37 @@ public interface Tables {
 
         System.out.println("\nInserta el número de la fila que quieres editar: ( 1-" + nRows +" / 0-Salir)");
         int rowChoice = scanner.nextInt();
+        rs.absolute(rowChoice);
         if (rowChoice > 0 && rowChoice <= nRows ){
             switch (tableChoice){
+                case 3:
+                    String newAgencyName = scannerString("Introduce el nombre de la agencia (" + rs.getString(1)+"): ");
+                    String newAgencyType = scannerString("Introduce el tipo de la agencia (" + rs.getString(2)+"): ");
+                    String newAgencyAbbreviation = scannerString("Introduce la abreviación de la agencia (" + rs.getString(3)+"): ");
+                    String newAgencyAdministration = scannerString("Introduce la administración de la agencia (" + rs.getString(4)+"): ");
+                    String newAgencyFounded = scannerString("Introduce el año de fundación de la agencia (" + rs.getString(5)+"): ");
+                    String newAgencyCountry = scannerString("Introduce el país de la agencia (" + rs.getString(6)+"): ");
+                    String newAgencySpacecraft = scannerString("Introduce la/s nave/s de la agencia (" + rs.getString(7)+"): ");
+                    String newAgencyLaunchers = scannerString("Introduce el/los cohete/s de la agencia (" + rs.getString(8)+"): ");
+                    String newAgencyDescription = scannerString("Introduce la descripción de la agencia (" + rs.getString(9)+"): \n");
+
+                    sql = "UPDATE agency\n" +
+                            "SET agency_name = '"+newAgencyName+"', agency_type = '"+newAgencyType+"', agency_abbreviation = '"+newAgencyAbbreviation+"',\n" +
+                            "agency_administration = '"+newAgencyAdministration+"', agency_founded = '"+newAgencyFounded+"', agency_country = '"+newAgencyCountry+"',\n" +
+                            "agency_spacecraft = '"+newAgencySpacecraft+"', agency_launchers = '"+newAgencyLaunchers+"', agency_description = '"+newAgencyDescription+"'\n" +
+                            "WHERE agency_name = (SELECT agency_name FROM agency LIMIT 1 OFFSET "+(rowChoice-1)+");";
+                    break;
                 case 4:
-                    String newLocationName = scannerString("Introduce el nuevo nombre de la ubicación: ");
-                    String newLaunchLocation = scannerString("Introduce el nuevo lugar de lanzamiento: ");
-                    String newRocketsLaunched = scannerString("Introduce el nuevo número de cohetes lanzados: ");
+                    String newLocationName = scannerString("Introduce el nuevo nombre de la ubicación (" + rs.getString(1) +"): ");
+                    String newLaunchLocation = scannerString("Introduce el nuevo lugar de lanzamiento (" + rs.getString(2) +"): ");
+                    String newRocketsLaunched = scannerString("Introduce el nuevo número de cohetes lanzados (" + rs.getString(3) +"): ");
                     sql = "UPDATE location\n" +
-                            "SET location_name = '"+newLocationName+"', launch_location = '"+newLaunchLocation+"', rockets_launched = '"+newRocketsLaunched+"' WHERE location_name = (SELECT location_name FROM location LIMIT 1 OFFSET "+(rowChoice-1)+");";
-                    PreparedStatement preparedStatement = conn.prepareStatement(sql);
-                    preparedStatement.executeUpdate();
+                            "SET location_name = '"+newLocationName+"', launch_location = '"+newLaunchLocation+"', rockets_launched = '"+newRocketsLaunched+"' " +
+                            "WHERE location_name = (SELECT location_name FROM location LIMIT 1 OFFSET "+(rowChoice-1)+");";
                     break;
             }
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.executeUpdate();
 
         } else if (rowChoice == 0){
             System.out.println("No se ha editado ninguna fila");
