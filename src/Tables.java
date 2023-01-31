@@ -2,6 +2,8 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
@@ -406,11 +408,39 @@ public interface Tables {
             System.out.println(e.getMessage());
         }
 
-        System.out.println("\nInserta el número de la fila que quieres editar: ( 1-" + nRows +" / 0-Salir)");
-        int rowChoice = scanner.nextInt();
+        int rowChoice = scannerInt("\nInserta el número de la fila que quieres editar: ( 1-" + nRows +" / 0-Salir)",0,nRows);
         rs.absolute(rowChoice);
         if (rowChoice > 0 && rowChoice <= nRows ){
             switch (tableChoice){
+                case 2:
+                    String newRocketName = scannerString("Introduce el nombre del cohete (" + rs.getString(1)+"): ");
+                    String newRocketFamily = scannerString("Introduce la família del cohete (" + rs.getString(2)+"): ");
+                    String newRocketLength = scannerString("Introduce la longitud del cohete (" + rs.getString(3)+"): ");
+                    String newRocketDiameter = scannerString("Introduce el diámetro del cohete (" + rs.getString(4)+"): ");
+                    String newRocketOrbitCapacity = scannerString("Introduce la capacidad de órbita baja del cohete (" + rs.getString(5)+"): ");
+                    String newRocketLaunchMass = scannerString("Introduce la masa de lanzamiento del cohete (" + rs.getString(6)+"): ");
+                    String newRocketDescription = scannerString("Introduce la descripción del cohete (" + rs.getString(7)+")\n: ");
+
+
+                    System.out.println("Lista de agencias:");
+                    String sql2 = "SELECT agency_name FROM agency";
+                    conn.prepareStatement(sql2);
+                    ResultSet rs2 = pstmt.executeQuery();
+                    List<String> agencyNames = new ArrayList<>();
+                    int i = 0;
+                    while (rs2.next()) {
+                        i++;
+                        System.out.println(i + " | " + rs2.getString("agency_name"));
+                        agencyNames.add(rs2.getString("agency_name"));
+                    }
+                    String newAgencyNameRocket = agencyNames.get(scannerInt("Introduce el número correspondiente a la agencia del cohete: ",1,i)-1);
+
+                    sql = "UPDATE rocket\n" +
+                            "SET rocket_name = '"+newRocketName+"', rocket_family = '"+newRocketFamily+"', rocket_length = '"+newRocketLength+"',\n" +
+                            "rocket_diameter = '"+newRocketDiameter+"', rocket_low_earth_orbit_capacity = '"+newRocketOrbitCapacity+"', rocket_launch_mass = '"+newRocketLaunchMass+"',\n" +
+                            "rocket_description = '"+newRocketDescription+"', agency_name = '"+newAgencyNameRocket+"'\n" +
+                            "WHERE agency_name = (SELECT agency_name FROM agency LIMIT 1 OFFSET "+(rowChoice-1)+");";
+                    break;
                 case 3:
                     String newAgencyName = scannerString("Introduce el nombre de la agencia (" + rs.getString(1)+"): ");
                     String newAgencyType = scannerString("Introduce el tipo de la agencia (" + rs.getString(2)+"): ");
@@ -472,4 +502,25 @@ public interface Tables {
 
         return userInput;
     }
+    public static int scannerInt(String pregunta, int min, int max) {
+        Scanner sc = new Scanner(System.in);
+        int userInput = 0;
+        boolean isValid = false;
+        while (!isValid) {
+            try {
+                System.out.print(pregunta);
+                userInput = sc.nextInt();
+                if (userInput >= min && userInput <= max) {
+                    isValid = true;
+                } else {
+                    System.out.println("El número debe estar entre " + min + " y " + max + ".");
+                }
+            } catch (Exception e) {
+                System.out.println("Ocurrió un error al leer la entrada. Por favor, inténtalo de nuevo con un número entero.");
+                sc.next();
+            }
+        }
+        return userInput;
+    }
+
 }
