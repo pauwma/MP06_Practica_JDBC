@@ -296,7 +296,7 @@ public interface Tables {
     }
 
     /**
-     * Método para seleccionar datos de una tabla en una base de datos.
+     * Método para seleccionar datos de una tabla en la base de datos.
      *
      * @param conn La conexión con la base de datos.
      * @param nTabla Número de la tabla que desea mostrar, 0 para preguntar.
@@ -357,6 +357,12 @@ public interface Tables {
         }
     }
 
+    /**
+     * Método para editar datos de una tabla en la base de datos.
+     *
+     * @param conn La conexión con la base de datos.
+     * @throws SQLException Si hay un error en la consulta a la base de datos.
+     */
     public static void updateInTable(Connection conn) throws SQLException{
         Scanner scanner = new Scanner(System.in);
         System.out.print("Ingrese en que tabla quiere buscar (1: launch, 2: rocket, 3: agency, 4: location, 5: mission): ");
@@ -563,7 +569,11 @@ public interface Tables {
     }
 
 
-
+    /**
+     * Método para preguntar al usuario por un String con excepciones.
+     *
+     * @param pregunta Pregunta para mostrar por pantalla.
+     */
     public static String scannerString(String pregunta) {
         Scanner sc = new Scanner(System.in);
         String userInput = "";
@@ -586,6 +596,14 @@ public interface Tables {
 
         return userInput;
     }
+
+    /**
+     * Método para preguntar al usuario por un Integer con excepciones.
+     *
+     * @param pregunta Pregunta para mostrar por pantalla.
+     * @param min Número mínimo.
+     * @param max Número máximo.
+     */
     public static int scannerInt(String pregunta, int min, int max) {
         Scanner sc = new Scanner(System.in);
         int userInput = 0;
