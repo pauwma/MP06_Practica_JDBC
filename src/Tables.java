@@ -412,6 +412,67 @@ public interface Tables {
         rs.absolute(rowChoice);
         if (rowChoice > 0 && rowChoice <= nRows ){
             switch (tableChoice){
+                case 1:
+                    String newLaunchTitle = scannerString("Introduce el título del lanzamiento (" + rs.getString(1)+"): ");
+                    String newLaunchStatus = scannerString("Introduce la estado del lanzamiento (" + rs.getString(2)+"): ");
+                    String newLaunchDate = scannerString("Introduce la fecha del lanzamiento (" + rs.getString(3)+"): ");
+
+                    System.out.println("\nLista de cohetes:");
+                    String sqlLaunchRocket = "SELECT rocket_name FROM rocket;";
+                    conn.prepareStatement(sqlLaunchRocket);
+                    ResultSet rsLaunchRockets = pstmt.executeQuery();
+                    List<String> rocketLaunchNames = new ArrayList<>();
+                    int nLaunchRocket = 0;
+                    while (rsLaunchRockets.next()) {
+                        nLaunchRocket++;
+                        System.out.println(nLaunchRocket + " | " + rsLaunchRockets.getString("rocket_name"));
+                        rocketLaunchNames.add(rsLaunchRockets.getString("rocket_name"));
+                    }
+                    String newLaunchRocket = rocketLaunchNames.get(scannerInt("Introduce el número correspondiente al cohete de la misión: ",1,nLaunchRocket)-1);
+
+                    System.out.println("\nLista de agencias:");
+                    String sqlLaunchAgency = "SELECT agency_name FROM agency;";
+                    conn.prepareStatement(sqlLaunchAgency);
+                    ResultSet rsLaunchAgency = pstmt.executeQuery();
+                    List<String> agencyLaunchNames = new ArrayList<>();
+                    int nLaunchAgency = 0;
+                    while (rsLaunchAgency.next()) {
+                        nLaunchAgency++;
+                        System.out.println(nLaunchAgency + " | " + rsLaunchAgency.getString("agency_name"));
+                        agencyLaunchNames.add(rsLaunchAgency.getString("agency_name"));
+                    }
+                    String newLaunchAgency = agencyLaunchNames.get(scannerInt("Introduce el número correspondiente a la agencia del cohete: ",1,nLaunchAgency)-1);
+
+                    System.out.println("\nLista de localizaciones:");
+                    String sqlLaunchLocation = "SELECT location_name FROM location;";
+                    conn.prepareStatement(sqlLaunchLocation);
+                    ResultSet rsLaunchLocation = pstmt.executeQuery();
+                    List<String> agencyLaunchLocations = new ArrayList<>();
+                    int nLaunchLocation = 0;
+                    while (rsLaunchLocation.next()) {
+                        nLaunchLocation++;
+                        System.out.println(nLaunchLocation + " | " + rsLaunchLocation.getString("location_name"));
+                        agencyLaunchLocations.add(rsLaunchLocation.getString("location_name"));
+                    }
+                    String newLaunchLocation = agencyLaunchLocations.get(scannerInt("Introduce el número correspondiente a la agencia del cohete: ",1,nLaunchLocation)-1);
+
+                    System.out.println("\nLista de misiones:");
+                    String sqlLaunchMission = "SELECT mission_name FROM mission;";
+                    conn.prepareStatement(sqlLaunchMission);
+                    ResultSet rsLaunchMission = pstmt.executeQuery();
+                    List<String> agencyLaunchMissions = new ArrayList<>();
+                    int nLaunchMission = 0;
+                    while (rsLaunchMission.next()) {
+                        nLaunchMission++;
+                        System.out.println(nLaunchMission + " | " + rsLaunchMission.getString("mission_name"));
+                        agencyLaunchMissions.add(rsLaunchMission.getString("mission_name"));
+                    }
+                    String newLaunchMission = agencyLaunchMissions.get(scannerInt("Introduce el número correspondiente a la agencia del cohete: ",1,nLaunchMission)-1);
+
+                    sql = "UPDATE launch\n" +
+                            "SET launch_title = '"+newLaunchTitle+"', launch_status = '"+newLaunchStatus+"', launch_date = '"+newLaunchDate+"', rocket_name = '"+newLaunchRocket+"', agency_name = '"+newLaunchAgency+"', location_name = '"+newLaunchLocation+"', mission_name = '"+newLaunchMission+"'"+
+                            "WHERE launch_title = (SELECT launch_title FROM launch LIMIT 1 OFFSET "+(rowChoice-1)+");";
+                    break;
                 case 2:
                     String newRocketName = scannerString("Introduce el nombre del cohete (" + rs.getString(1)+"): ");
                     String newRocketFamily = scannerString("Introduce la família del cohete (" + rs.getString(2)+"): ");
@@ -459,14 +520,13 @@ public interface Tables {
                     break;
                 case 4:
                     String newLocationName = scannerString("Introduce el nuevo nombre de la ubicación (" + rs.getString(1) +"): ");
-                    String newLaunchLocation = scannerString("Introduce el nuevo lugar de lanzamiento (" + rs.getString(2) +"): ");
+                    String newLocationLocation = scannerString("Introduce el nuevo lugar de lanzamiento (" + rs.getString(2) +"): ");
                     String newRocketsLaunched = scannerString("Introduce el nuevo número de cohetes lanzados (" + rs.getString(3) +"): ");
                     sql = "UPDATE location\n" +
-                            "SET location_name = '"+newLocationName+"', launch_location = '"+newLaunchLocation+"', rockets_launched = '"+newRocketsLaunched+"' " +
+                            "SET location_name = '"+newLocationName+"', launch_location = '"+newLocationLocation+"', rockets_launched = '"+newRocketsLaunched+"' " +
                             "WHERE location_name = (SELECT location_name FROM location LIMIT 1 OFFSET "+(rowChoice-1)+");";
                     break;
                 case 5:
-
                     String newMissionName = scannerString("Introduce el nombre de la misión (" + rs.getString(1) +"): ");
                     String newMissionLaunchCost = scannerString("Introduce el coste de la misión (" + rs.getString(2) +"): ");
                     String newMissionType = scannerString("Introduce el tipo de la misión (" + rs.getString(3) +"): ");
