@@ -408,7 +408,7 @@ public interface Tables {
             System.out.println(e.getMessage());
         }
 
-        int rowChoice = scannerInt("\nInserta el número de la fila que quieres editar: ( 1-" + nRows +" / 0-Salir)",0,nRows);
+        int rowChoice = scannerInt("\nInserta el número de la fila que quieres editar ( 1-" + nRows +" / 0-Salir): ",0,nRows);
         rs.absolute(rowChoice);
         if (rowChoice > 0 && rowChoice <= nRows ){
             switch (tableChoice){
@@ -421,9 +421,8 @@ public interface Tables {
                     String newRocketLaunchMass = scannerString("Introduce la masa de lanzamiento del cohete (" + rs.getString(6)+"): ");
                     String newRocketDescription = scannerString("Introduce la descripción del cohete (" + rs.getString(7)+")\n: ");
 
-
                     System.out.println("Lista de agencias:");
-                    String sql2 = "SELECT agency_name FROM agency";
+                    String sql2 = "SELECT agency_name FROM agency;";
                     conn.prepareStatement(sql2);
                     ResultSet rs2 = pstmt.executeQuery();
                     List<String> agencyNames = new ArrayList<>();
@@ -439,7 +438,7 @@ public interface Tables {
                             "SET rocket_name = '"+newRocketName+"', rocket_family = '"+newRocketFamily+"', rocket_length = '"+newRocketLength+"',\n" +
                             "rocket_diameter = '"+newRocketDiameter+"', rocket_low_earth_orbit_capacity = '"+newRocketOrbitCapacity+"', rocket_launch_mass = '"+newRocketLaunchMass+"',\n" +
                             "rocket_description = '"+newRocketDescription+"', agency_name = '"+newAgencyNameRocket+"'\n" +
-                            "WHERE agency_name = (SELECT agency_name FROM agency LIMIT 1 OFFSET "+(rowChoice-1)+");";
+                            "WHERE rocket_name = (SELECT rocket_name FROM rocket LIMIT 1 OFFSET "+(rowChoice-1)+");";
                     break;
                 case 3:
                     String newAgencyName = scannerString("Introduce el nombre de la agencia (" + rs.getString(1)+"): ");
