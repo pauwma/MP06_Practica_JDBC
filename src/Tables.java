@@ -296,6 +296,98 @@ public interface Tables {
     }
 
     /**
+     * Busca toda la información de un lanzamiento introducido por el usuario en una tabla también selecionada.
+     *
+     * @param conn La conexión a la base de datos.
+     * @throws SQLException Si hay algún problema con la conexión a la base de datos.
+     */
+    // TODO ESTO
+    public static void searchAllOf(Connection conn) throws SQLException{
+        Scanner scanner = new Scanner(System.in);
+        String searchText = "";
+        while (searchText.replace(" ", "").isEmpty()) {
+            System.out.print("Ingrese el texto de búsqueda: ");
+            searchText = scanner.nextLine();
+            searchText = searchText.toLowerCase();
+            if (searchText.replace(" ", "").isEmpty()) {
+                System.out.println("Por favor ingrese un texto válido.");
+            }
+        }
+
+        System.out.print("Ingrese en que tabla quiere buscar (1: launch, 2: rocket, 3: agency, 4: location, 5: mission): ");
+        int tableChoice = scanner.nextInt();
+        String query = "";
+        switch(tableChoice){
+            case 1:
+                query = "SELECT * FROM launch WHERE launch_title ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM launch WHERE launch_status ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM launch WHERE launch_date ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM launch WHERE rocket_name ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM launch WHERE agency_name ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM launch WHERE location_name ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM launch WHERE mission_name ILIKE '%" + searchText + "%'";
+                break;
+            case 2:
+                query = "SELECT * FROM rocket WHERE rocket_name ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM rocket WHERE rocket_family ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM rocket WHERE rocket_length ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM rocket WHERE rocket_diameter ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM rocket WHERE rocket_low_earth_orbit_capacity ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM rocket WHERE rocket_launch_mass ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM rocket WHERE rocket_description ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM rocket WHERE agency_name ILIKE '%" + searchText + "%' ";
+                break;
+            case 3:
+                query = "SELECT * FROM agency WHERE agency_name ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM agency WHERE agency_type ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM agency WHERE agency_abbreviation ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM agency WHERE agency_administration ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM agency WHERE agency_founded ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM agency WHERE agency_country ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM agency WHERE agency_spacecraft ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM agency WHERE agency_launchers ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM agency WHERE agency_description ILIKE '%" + searchText + "%'";
+                break;
+            case 4:
+                query = "SELECT * FROM location WHERE location_name ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM location WHERE launch_location ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM location WHERE rockets_launched ILIKE '%" + searchText + "%'";
+
+                break;
+            case 5:
+                query = "SELECT * FROM mission WHERE mission_name ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM mission WHERE mission_launch_cost ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM mission WHERE mission_type ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM mission WHERE mission_description ILIKE '%" + searchText + "%' " +
+                        "UNION SELECT * FROM mission WHERE rocket_name ILIKE '%" + searchText + "%'";
+                break;
+            default:
+                System.out.println("Opción inválida, por favor ingrese un número entre 1 y 5.");
+                return;
+        }
+
+        PreparedStatement statement = conn.prepareStatement(query);
+        ResultSet result = statement.executeQuery();
+        if (!result.next()) {
+            System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nNo se ha encontrado \"" + searchText+"\"\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        } else {
+            System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+            do {
+                ResultSetMetaData rsmd = result.getMetaData();
+                int columnCount = rsmd.getColumnCount();
+                for (int i = 1; i <= columnCount; i++) {
+                    String columnName = rsmd.getColumnName(i);
+                    String columnValue = result.getString(i);
+                    if (columnValue.toLowerCase().contains(searchText.toLowerCase())) {
+                        System.out.println(columnName + ": " + columnValue);
+                    }
+                }
+            } while (result.next());
+            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+        }
+    }
+
+    /**
      * Método para seleccionar datos de una tabla en la base de datos.
      *
      * @param conn La conexión con la base de datos.
