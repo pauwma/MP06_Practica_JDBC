@@ -358,7 +358,7 @@ public interface Tables {
     }
 
     /**
-     * Método para editar datos de una tabla en la base de datos.
+     * Método para editar una fila de una tabla en la base de datos.
      *
      * @param conn La conexión con la base de datos.
      * @throws SQLException Si hay un error en la consulta a la base de datos.
@@ -568,10 +568,18 @@ public interface Tables {
 
     }
 
+    /**
+     * Método para eliminar una fila de una tabla en la base de datos.
+     *
+     * @param conn La conexión con la base de datos.
+     * @throws SQLException Si hay un error en la consulta a la base de datos.
+     */
     public static void deleteInTable(Connection conn) throws SQLException{
         Scanner scanner = new Scanner(System.in);
         System.out.print("Ingrese en que tabla quieres buscar (1: launch, 2: rocket, 3: agency, 4: location, 5: mission): ");
         int tableChoice = scanner.nextInt();
+        String keyTable = "";
+        String tableName = "";
         String sql = "SELECT * FROM ";
         PreparedStatement pstmt = null;
         ResultSet rs = null;
@@ -580,18 +588,28 @@ public interface Tables {
             switch (tableChoice){
                 case 1:
                     sql += "launch";
+                    keyTable = "launch_title";
+                    tableName = "launch";
                     break;
                 case 2:
                     sql += "rocket";
+                    keyTable = "rocket_name";
+                    tableName = "rocket";
                     break;
                 case 3:
                     sql += "agency";
+                    keyTable = "agency_name";
+                    tableName = "agency";
                     break;
                 case 4:
+                    keyTable = "location_name";
+                    tableName = "location";
                     sql += "location";
                     break;
                 case 5:
                     sql += "mission";
+                    keyTable = "mission_name";
+                    tableName = "mission";
                     break;
                 default:
                     System.out.println("Opción no válida");
@@ -623,6 +641,7 @@ public interface Tables {
         rs.absolute(rowChoice);
         if (rowChoice > 0 && rowChoice <= nRows ){
 
+            sql = "DELETE FROM " + tableName +" WHERE "+ keyTable +" = (SELECT "+ keyTable +" FROM "+ tableName +" LIMIT 1 OFFSET "+(rowChoice-1)+");";
             PreparedStatement preparedStatement = conn.prepareStatement(sql);
             preparedStatement.executeUpdate();
 
