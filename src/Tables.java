@@ -568,6 +568,72 @@ public interface Tables {
 
     }
 
+    public static void deleteInTable(Connection conn) throws SQLException{
+        Scanner scanner = new Scanner(System.in);
+        System.out.print("Ingrese en que tabla quieres buscar (1: launch, 2: rocket, 3: agency, 4: location, 5: mission): ");
+        int tableChoice = scanner.nextInt();
+        String sql = "SELECT * FROM ";
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        int nRows = 0;
+        try {
+            switch (tableChoice){
+                case 1:
+                    sql += "launch";
+                    break;
+                case 2:
+                    sql += "rocket";
+                    break;
+                case 3:
+                    sql += "agency";
+                    break;
+                case 4:
+                    sql += "location";
+                    break;
+                case 5:
+                    sql += "mission";
+                    break;
+                default:
+                    System.out.println("Opción no válida");
+                    return;
+            }
+
+            pstmt = conn.prepareStatement(sql, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            rs = pstmt.executeQuery();
+
+            int i = 1;
+            ResultSetMetaData rsmd = rs.getMetaData();
+            while (rs.next()) {
+                ResultSetMetaData metaData = rs.getMetaData();
+                int columnCount = metaData.getColumnCount();
+                System.out.print(i + " | ");
+                for (int j = 1; j <= columnCount; j++) {
+                    System.out.print(rs.getString(j) + " | ");
+                }
+                System.out.println();
+                i++;
+            }
+            nRows = i-1;
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+
+        int rowChoice = scannerInt("\nInserta el número de la fila que quieres editar ( 1-" + nRows +" / 0-Salir): ",0,nRows);
+        rs.absolute(rowChoice);
+        if (rowChoice > 0 && rowChoice <= nRows ){
+
+            PreparedStatement preparedStatement = conn.prepareStatement(sql);
+            preparedStatement.executeUpdate();
+
+        } else if (rowChoice == 0){
+            System.out.println("No se ha eliminado ninguna fila");
+        } else {
+            System.out.println("Opción no válida");
+        }
+
+    }
+
 
     /**
      * Método para preguntar al usuario por un String con excepciones.
