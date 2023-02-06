@@ -111,19 +111,23 @@ public class Menu {
 			System.out.println("│       MENU  SELECTS       │");
 			System.out.println("├───────────────────────────┤");
 			System.out.println("│  1 -      Tablas     - 1  │");
-			System.out.println("│  2 -   Condiciones   - 2  │");
+			System.out.println("│  2 -    Por texto    - 2  │");
+			System.out.println("│  3 -   Lanzamiento   - 3  │");
 			System.out.println("│  0 -      Cerrar     - 0  │");
 			System.out.println("└───────────────────────────┘");
 			System.out.print("Elige una opción: ");
 			try {
 				option = Integer.parseInt(br.readLine());
-				if (option >= 0 && option <= 2) {
+				if (option >= 0 && option <= 3) {
 					switch (option){
 						case 1:
 							Tables.selectInTable(conn,0);
 							break;
 						case 2:
 							Tables.searchByText(conn);
+							break;
+						case 3:
+							Tables.searchAllOf(conn);
 							break;
 						case 0:
 							cerrarSubmenu = true;
@@ -212,6 +216,7 @@ public class Menu {
 							Tables.deleteInTable(conn);
 							break;
 						case 2:
+							//Tables.deleteByCondition(conn);
 							break;
 						case 0:
 							cerrarSubmenu = true;

@@ -301,89 +301,97 @@ public interface Tables {
      * @param conn La conexión a la base de datos.
      * @throws SQLException Si hay algún problema con la conexión a la base de datos.
      */
-    // TODO ESTO
     public static void searchAllOf(Connection conn) throws SQLException{
         Scanner scanner = new Scanner(System.in);
-        String searchText = "";
-        while (searchText.replace(" ", "").isEmpty()) {
-            System.out.print("Ingrese el texto de búsqueda: ");
-            searchText = scanner.nextLine();
-            searchText = searchText.toLowerCase();
-            if (searchText.replace(" ", "").isEmpty()) {
-                System.out.println("Por favor ingrese un texto válido.");
+        try {
+            String query = "SELECT * from location";
+            PreparedStatement statement = conn.prepareStatement(query, ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_READ_ONLY);
+            ResultSet result = statement.executeQuery();
+            int nRows = 0;
+
+            int i = 1;
+            ResultSetMetaData rsmd = result.getMetaData();
+            while (result.next()) {
+                ResultSetMetaData metaData = result.getMetaData();
+                int columnCount = metaData.getColumnCount();
+                System.out.print(i + " | ");
+                for (int j = 1; j <= columnCount; j++) {
+                    System.out.print(result.getString(j) + " | ");
+                }
+                System.out.println();
+                i++;
             }
-        }
+            nRows = i-1;
 
-        System.out.print("Ingrese en que tabla quiere buscar (1: launch, 2: rocket, 3: agency, 4: location, 5: mission): ");
-        int tableChoice = scanner.nextInt();
-        String query = "";
-        switch(tableChoice){
-            case 1:
-                query = "SELECT * FROM launch WHERE launch_title ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM launch WHERE launch_status ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM launch WHERE launch_date ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM launch WHERE rocket_name ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM launch WHERE agency_name ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM launch WHERE location_name ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM launch WHERE mission_name ILIKE '%" + searchText + "%'";
-                break;
-            case 2:
-                query = "SELECT * FROM rocket WHERE rocket_name ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM rocket WHERE rocket_family ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM rocket WHERE rocket_length ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM rocket WHERE rocket_diameter ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM rocket WHERE rocket_low_earth_orbit_capacity ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM rocket WHERE rocket_launch_mass ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM rocket WHERE rocket_description ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM rocket WHERE agency_name ILIKE '%" + searchText + "%' ";
-                break;
-            case 3:
-                query = "SELECT * FROM agency WHERE agency_name ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM agency WHERE agency_type ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM agency WHERE agency_abbreviation ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM agency WHERE agency_administration ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM agency WHERE agency_founded ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM agency WHERE agency_country ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM agency WHERE agency_spacecraft ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM agency WHERE agency_launchers ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM agency WHERE agency_description ILIKE '%" + searchText + "%'";
-                break;
-            case 4:
-                query = "SELECT * FROM location WHERE location_name ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM location WHERE launch_location ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM location WHERE rockets_launched ILIKE '%" + searchText + "%'";
+            int rowChoice = scannerInt("\nInserta el número de lanzamiento que quieres ver ( 1-" + nRows +" / 0-Salir): ",0,nRows);
+            result.absolute(rowChoice);
+            if (rowChoice > 0 && rowChoice <= nRows ){
+                query = "SELECT * FROM launch WHERE launch_title = (SELECT launch_title FROM launch LIMIT 1 OFFSET "+(rowChoice-1)+");";
+                PreparedStatement preparedStatement = conn.prepareStatement(query);
+                ResultSet launchResult = preparedStatement.executeQuery();
+                if (launchResult.next()) {
+                    String launchRocket = launchResult.getString("rocket_name");
+                    String launchAgency = launchResult.getString("agency_name");
+                    String launchLocation = launchResult.getString("location_name");
+                    String launchMission = launchResult.getString("mission_name");
 
-                break;
-            case 5:
-                query = "SELECT * FROM mission WHERE mission_name ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM mission WHERE mission_launch_cost ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM mission WHERE mission_type ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM mission WHERE mission_description ILIKE '%" + searchText + "%' " +
-                        "UNION SELECT * FROM mission WHERE rocket_name ILIKE '%" + searchText + "%'";
-                break;
-            default:
-                System.out.println("Opción inválida, por favor ingrese un número entre 1 y 5.");
-                return;
-        }
+                    query = "SELECT * FROM rocket WHERE rocket_name = \'"+launchRocket+"\';";
+                    PreparedStatement rocketStatement = conn.prepareStatement(query);
+                    ResultSet rocketResult = rocketStatement.executeQuery();
+                    if (rocketResult.next()) {
+                        ResultSetMetaData rocketMetadata = rocketResult.getMetaData();
+                        System.out.println("COHETE\n─────────────");
+                        int columnCount = rocketMetadata.getColumnCount();
+                        for (int j = 1; j <= columnCount; j++) {
+                            System.out.println(rocketMetadata.getColumnName(j) + ": " + rocketResult.getString(j));
+                        }
+                    }
 
-        PreparedStatement statement = conn.prepareStatement(query);
-        ResultSet result = statement.executeQuery();
-        if (!result.next()) {
-            System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nNo se ha encontrado \"" + searchText+"\"\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        } else {
-            System.out.println("\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-            do {
-                ResultSetMetaData rsmd = result.getMetaData();
-                int columnCount = rsmd.getColumnCount();
-                for (int i = 1; i <= columnCount; i++) {
-                    String columnName = rsmd.getColumnName(i);
-                    String columnValue = result.getString(i);
-                    if (columnValue.toLowerCase().contains(searchText.toLowerCase())) {
-                        System.out.println(columnName + ": " + columnValue);
+                    query = "SELECT * FROM agency WHERE agency_name = \'"+launchAgency+"\';";
+                    PreparedStatement agencyStatement = conn.prepareStatement(query);
+                    ResultSet agencyResult = agencyStatement.executeQuery();
+                    if (agencyResult.next()) {
+                        ResultSetMetaData agencyMetadata = agencyResult.getMetaData();
+                        System.out.println("\nAGENCIA\n─────────────");
+                        int columnCount = agencyMetadata.getColumnCount();
+                        for (int j = 1; j <= columnCount; j++) {
+                            System.out.println(agencyMetadata.getColumnName(j) + ": " + agencyResult.getString(j));
+                        }
+                    }
+
+                    query = "SELECT * FROM location WHERE location_name = \'"+launchLocation+"\';";
+                    PreparedStatement locationStatement = conn.prepareStatement(query);
+                    ResultSet locationResult = locationStatement.executeQuery();
+                    if (locationResult.next()) {
+                        ResultSetMetaData locationMetadata = locationResult.getMetaData();
+                        System.out.println("\nLOCALIZACIÓN\n───────────────────");
+                        int columnCount = locationMetadata.getColumnCount();
+                        for (int j = 1; j <= columnCount; j++) {
+                            System.out.println(locationMetadata.getColumnName(j) + ": " + locationResult.getString(j));
+                        }
+                    }
+
+                    query = "SELECT * FROM mission WHERE mission_name = \'"+launchMission+"\';";
+                    PreparedStatement missionStatement = conn.prepareStatement(query);
+                    ResultSet missionResult = missionStatement.executeQuery();
+                    if (missionResult.next()) {
+                        ResultSetMetaData missionMetadata = missionResult.getMetaData();
+                        System.out.println("\nMISIÓN\n──────────────");
+                        int columnCount = missionMetadata.getColumnCount();
+                        for (int j = 1; j <= columnCount; j++) {
+                            System.out.println(missionMetadata.getColumnName(j) + ": " + missionResult.getString(j));
+                        }
                     }
                 }
-            } while (result.next());
-            System.out.println("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
+
+            } else if (rowChoice == 0){
+                System.out.println("No se ha mostrado ningún lanzamiento");
+            } else {
+                System.out.println("Opción no válida");
+            }
+
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
         }
     }
 
