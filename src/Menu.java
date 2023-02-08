@@ -172,6 +172,7 @@ public class Menu {
 							Tables.updateInTable(conn);
 							break;
 						case 2:
+							Tables.updateLaunchBy(conn);
 							break;
 						case 0:
 							cerrarSubmenu = true;
