@@ -668,7 +668,12 @@ public interface Tables {
 
     }
 
-    // TODO Update por condición
+    /**
+     * Método para editar un conjunto de launches según la condición indicada.
+     *
+     * @param conn La conexión con la base de datos.
+     * @throws SQLException Si hay un error en la consulta a la base de datos.
+     */
     public static void updateLaunchBy(Connection conn) throws SQLException{
         int varChoice = scannerInt("Introduce la condición (1: rocket 2: agency 3: location 4: mission / 0: Salir): ",0,4);
         String sqlLaunchRocket = "SELECT rocket_name FROM rocket;";
