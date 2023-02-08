@@ -217,7 +217,7 @@ public class Menu {
 							Tables.deleteInTable(conn);
 							break;
 						case 2:
-							//Tables.deleteByCondition(conn);
+							Tables.deleteLaunchBy(conn);
 							break;
 						case 0:
 							cerrarSubmenu = true;

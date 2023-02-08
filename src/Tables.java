@@ -692,11 +692,11 @@ public interface Tables {
                     System.out.println(nLaunchRocket + " | " + rs.getString("rocket_name"));
                     rocketLaunchNames.add(rs.getString("rocket_name"));
                 }
-                String conditionRocket = rocketLaunchNames.get(scannerInt("\nEditar launch con cohete: ",1,nLaunchRocket)-1);
-                String newRocket = rocketLaunchNames.get(scannerInt("Editar launch con cohete \""+conditionRocket+"\" a cohete: ",1,nLaunchRocket)-1);
+                String conditionRocket = rocketLaunchNames.get(scannerInt("\nEditar lanzamientos con cohete: ",1,nLaunchRocket)-1);
+                String newRocket = rocketLaunchNames.get(scannerInt("Editar lanzamientos con cohete \""+conditionRocket+"\" a cohete: ",1,nLaunchRocket)-1);
 
                 String updateConditionRocket = "UPDATE launch SET rocket_name = '"+newRocket+"' WHERE rocket_name = '"+conditionRocket+"';";
-                System.out.println("\nINFO - Todos los launch con cohete "+ conditionRocket +" han cambiado a " +newRocket+".");
+                System.out.println("\nINFO - Todos los launch con cohete \""+ conditionRocket +"\" han cambiado a \"" +newRocket+"\".");
                 pstmt = conn.prepareStatement(updateConditionRocket);
                 pstmt.executeUpdate();
                 break;
@@ -712,11 +712,11 @@ public interface Tables {
                     System.out.println(nLaunchAgency + " | " + rs.getString("agency_name"));
                     agencyLaunchNames.add(rs.getString("agency_name"));
                 }
-                String conditionAgency = agencyLaunchNames.get(scannerInt("\nEditar launch con agencia: ",1,nLaunchAgency)-1);
-                String newAgency = agencyLaunchNames.get(scannerInt("Editar launch con agencia \""+conditionAgency+"\" a agencia: ",1,nLaunchAgency)-1);
+                String conditionAgency = agencyLaunchNames.get(scannerInt("\nEditar lanzamientos con con agencia: ",1,nLaunchAgency)-1);
+                String newAgency = agencyLaunchNames.get(scannerInt("Editar lanzamientos con agencia \""+conditionAgency+"\" a agencia: ",1,nLaunchAgency)-1);
 
                 String updateConditionAgency = "UPDATE launch SET agency_name = '"+newAgency+"' WHERE agency_name = '"+conditionAgency+"';";
-                System.out.println("\nINFO - Todos los launch con agency "+ conditionAgency +" han cambiado a " +newAgency+".");
+                System.out.println("\nINFO - Todos los launch con agency \""+ conditionAgency +"\" han cambiado a \""+newAgency+"\".");
                 pstmt = conn.prepareStatement(updateConditionAgency);
                 pstmt.executeUpdate();
                 break;
@@ -732,11 +732,11 @@ public interface Tables {
                     System.out.println(nLaunchLocation + " | " + rs.getString("location_name"));
                     locationLaunchNames.add(rs.getString("location_name"));
                 }
-                String conditionLocation = locationLaunchNames.get(scannerInt("\nEditar launch con location: ",1,nLaunchLocation)-1);
-                String newLocation = locationLaunchNames.get(scannerInt("Editar launch con location \""+conditionLocation+"\" a location: ",1,nLaunchLocation)-1);
+                String conditionLocation = locationLaunchNames.get(scannerInt("\nEditar lanzamientos con location: ",1,nLaunchLocation)-1);
+                String newLocation = locationLaunchNames.get(scannerInt("Editar lanzamientos con location \""+conditionLocation+"\" a location: ",1,nLaunchLocation)-1);
 
                 String updateConditionLocation = "UPDATE launch SET location_name = '"+newLocation+"' WHERE location_name = '"+conditionLocation+"';";
-                System.out.println("\nINFO - Todos los launch con location "+ conditionLocation +" han cambiado a " +newLocation+".");
+                System.out.println("\nINFO - Todos los launch con location \""+ conditionLocation +"\" han cambiado a \"" +newLocation+"\".");
                 pstmt = conn.prepareStatement(updateConditionLocation);
                 pstmt.executeUpdate();
                 break;
@@ -752,11 +752,11 @@ public interface Tables {
                     System.out.println(nLaunchMission + " | " + rs.getString("mission_name"));
                     missionLaunchNames.add(rs.getString("mission_name"));
                 }
-                String conditionMission = missionLaunchNames.get(scannerInt("\nEditar launch con mission: ",1,nLaunchMission)-1);
-                String newMission = missionLaunchNames.get(scannerInt("Editar launch con mission \""+conditionMission+"\" a mission: ",1,nLaunchMission)-1);
+                String conditionMission = missionLaunchNames.get(scannerInt("\nEditar lanzamientos con mission: ",1,nLaunchMission)-1);
+                String newMission = missionLaunchNames.get(scannerInt("Editar lanzamientos con mission \""+conditionMission+"\" a mission: ",1,nLaunchMission)-1);
 
                 String updateConditionMission = "UPDATE launch SET mission_name = '"+newMission+"' WHERE mission_name = '"+conditionMission+"';";
-                System.out.println("\nINFO - Todos los launch con mission "+ conditionMission +" han cambiado a " +newMission+".");
+                System.out.println("\nINFO - Todos los launch con mission \""+ conditionMission +"\" han cambiado a \"" +newMission+"\".");
                 pstmt = conn.prepareStatement(updateConditionMission);
                 pstmt.executeUpdate();
                 break;
@@ -851,7 +851,99 @@ public interface Tables {
 
     }
 
-    // TODO Delete por condición
+    /**
+     * Método para eliminar un conjunto de launches según la condición indicada.
+     *
+     * @param conn La conexión con la base de datos.
+     * @throws SQLException Si hay un error en la consulta a la base de datos.
+     */
+    public static void deleteLaunchBy(Connection conn) throws SQLException{
+        int varChoice = scannerInt("Introduce la condición (1: rocket 2: agency 3: location 4: mission / 0: Salir): ",0,4);
+        String sqlLaunchRocket = "SELECT rocket_name FROM rocket;";
+        PreparedStatement pstmt = conn.prepareStatement(sqlLaunchRocket);
+        ResultSet rs = null;
+        switch (varChoice){
+            case 1:
+                System.out.println("\nLista de cohetes:");
+                sqlLaunchRocket = "SELECT rocket_name FROM rocket;";
+                pstmt = conn.prepareStatement(sqlLaunchRocket);
+                rs = pstmt.executeQuery();
+                List<String> rocketLaunchNames = new ArrayList<>();
+                int nLaunchRocket = 0;
+                while (rs.next()) {
+                    nLaunchRocket++;
+                    System.out.println(nLaunchRocket + " | " + rs.getString("rocket_name"));
+                    rocketLaunchNames.add(rs.getString("rocket_name"));
+                }
+                String conditionRocket = rocketLaunchNames.get(scannerInt("\nEliminar lanzamientos con cohete: ",1,nLaunchRocket)-1);
+
+                String updateConditionRocket = "DELETE FROM launch WHERE rocket_name = '"+conditionRocket+"';";
+                System.out.println("\nINFO - Todos los launch con cohete \""+ conditionRocket +"\" se han eliminado.");
+                pstmt = conn.prepareStatement(updateConditionRocket);
+                pstmt.executeUpdate();
+                break;
+            case 2:
+                System.out.println("\nLista de agencias:");
+                String sqlLaunchAgency = "SELECT agency_name FROM agency;";
+                pstmt = conn.prepareStatement(sqlLaunchAgency);
+                rs = pstmt.executeQuery();
+                List<String> agencyLaunchNames = new ArrayList<>();
+                int nLaunchAgency = 0;
+                while (rs.next()) {
+                    nLaunchAgency++;
+                    System.out.println(nLaunchAgency + " | " + rs.getString("agency_name"));
+                    agencyLaunchNames.add(rs.getString("agency_name"));
+                }
+                String conditionAgency = agencyLaunchNames.get(scannerInt("\nEliminar lanzamientos con agencia: ",1,nLaunchAgency)-1);
+
+                String updateConditionAgency = "DELETE FROM launch WHERE agency_name = '"+conditionAgency+"';";
+                System.out.println("\nINFO - Todos los launch con agencia \""+ conditionAgency +"\" se han eliminado.");
+                pstmt = conn.prepareStatement(updateConditionAgency);
+                pstmt.executeUpdate();
+                break;
+            case 3:
+                System.out.println("\nLista de localizaciones:");
+                String sqlLaunchLocation = "SELECT location_name FROM location;";
+                pstmt = conn.prepareStatement(sqlLaunchLocation);
+                rs = pstmt.executeQuery();
+                List<String> locationLaunchNames = new ArrayList<>();
+                int nLaunchLocation = 0;
+                while (rs.next()) {
+                    nLaunchLocation++;
+                    System.out.println(nLaunchLocation + " | " + rs.getString("location_name"));
+                    locationLaunchNames.add(rs.getString("location_name"));
+                }
+                String conditionLocation = locationLaunchNames.get(scannerInt("\nEliminar lanzamientos con location: ",1,nLaunchLocation)-1);
+
+                String updateConditionLocation = "DELETE FROM launch WHERE location_name = '"+conditionLocation+"';";
+                System.out.println("\nINFO - Todos los launch con location \""+ conditionLocation +"\" se han eliminado.");
+                pstmt = conn.prepareStatement(updateConditionLocation);
+                pstmt.executeUpdate();
+                break;
+            case 4:
+                System.out.println("\nLista de misiones:");
+                String sqlLaunchMission = "SELECT mission_name FROM mission;";
+                pstmt = conn.prepareStatement(sqlLaunchMission);
+                rs = pstmt.executeQuery();
+                List<String> missionLaunchNames = new ArrayList<>();
+                int nLaunchMission = 0;
+                while (rs.next()) {
+                    nLaunchMission++;
+                    System.out.println(nLaunchMission + " | " + rs.getString("mission_name"));
+                    missionLaunchNames.add(rs.getString("mission_name"));
+                }
+                String conditionMission = missionLaunchNames.get(scannerInt("\nEliminar lanzamientos con mission: ",1,nLaunchMission)-1);
+
+                String updateConditionMission = "DELETE FROM launch WHERE mission_name = '"+conditionMission+"';";
+                System.out.println("\nINFO - Todos los launch con mission \""+ conditionMission +"\" se han eliminado.");
+                pstmt = conn.prepareStatement(updateConditionMission);
+                pstmt.executeUpdate();
+                break;
+            case 0:
+                System.out.println("No se ha editado nada.");
+                break;
+        }
+    }
 
     /**
      * Método para preguntar al usuario por un String con excepciones.
