@@ -43,7 +43,6 @@ public class Main {
 			case 0:
 				menu.close();
 				break;
-
 			}
 			option = menu.mainMenu();
 		}

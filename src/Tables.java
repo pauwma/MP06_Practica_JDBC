@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
-
 public interface Tables {
 
     /**
@@ -50,11 +49,16 @@ public interface Tables {
      * @throws SQLException Si ocurre algún error en la ejecución de la consulta SQL.
      */
     public static void insertAllData(Connection conn) throws SQLException {
-        insertLocations(conn);
-        insertAgencys(conn);
-        insertRockets(conn);
-        insertMissions(conn);
-        insertLaunches(conn);
+        try {
+            insertLocations(conn);
+            insertAgencys(conn);
+            insertRockets(conn);
+            insertMissions(conn);
+            insertLaunches(conn);
+            System.out.println("INFO - Base de datos rellenada");
+        } catch (Exception e){
+            System.out.println("INFO - No se ha podido rellenar la base de datos.");
+        }
     }
 
     /**
@@ -975,7 +979,6 @@ public interface Tables {
 
     /**
      * Método para preguntar al usuario por un Integer con excepciones.
-     *
      * @param pregunta Pregunta para mostrar por pantalla.
      * @param min Número mínimo.
      * @param max Número máximo.
@@ -1000,5 +1003,4 @@ public interface Tables {
         }
         return userInput;
     }
-
 }

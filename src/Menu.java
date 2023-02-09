@@ -13,7 +13,6 @@ public class Menu {
 		super();
 	}
 
-
 	/**
 	 * Muestra el menú principal y permite elegir una opción.
 	 *
